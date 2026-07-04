@@ -18,11 +18,11 @@ public class PasswordChecker {
         score = 0;
 
         if (password.length() >= 8) {
-            score += 20;
+            score += 25;
         }
 
         if (password.length() >= 12) {
-            score += 20;
+            score += 25;
         }
 
         if (password.matches(".*[a-z].*")) {
