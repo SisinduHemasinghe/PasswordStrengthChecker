@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class PasswordChecker {
 
 //    attributes
@@ -76,7 +79,7 @@ public class PasswordChecker {
         return false;
     }
 
-    private String estimateCrackTime() {        //display estimated crack time message
+    public String estimateCrackTime() {        //display estimated crack time message
         if (score <= 30) {
             return "Seconds to minutes";
         } else if (score <= 60) {
@@ -88,7 +91,7 @@ public class PasswordChecker {
         }
     }
 
-    private String getStrengthLevel() {
+    public String getStrengthLevel() {
         if (score <= 30) {
             return "Weak";
         } else if (score <= 60) {
@@ -113,6 +116,28 @@ public class PasswordChecker {
                 || lower.contains("xyz");
     }
 
+    public int getScore() {     //getter for get score
+        return score;
+    }
+
+    public List<String> getSuggestions() {
+        List<String> suggestions = new ArrayList<>();
+
+        if (password.length() < 8) suggestions.add("Use at least 8 characters.");
+        if (password.length() < 12) suggestions.add("Use 12 or more characters for better security.");
+        if (!password.matches(".*[A-Z].*")) suggestions.add("Add uppercase letters.");
+        if (!password.matches(".*[a-z].*")) suggestions.add("Add lowercase letters.");
+        if (!password.matches(".*[0-9].*")) suggestions.add("Add numbers.");
+        if (!password.matches(".*[^a-zA-Z0-9].*")) suggestions.add("Add special symbols like @, #, $, %.");
+        if (DictionaryChecker.isCommonPassword(password)) suggestions.add("Avoid common dictionary passwords.");
+        if (hasRepeatedCharacters()) suggestions.add("Avoid repeated characters like aaaa or 111.");
+        if (hasCommonPattern()) suggestions.add("Avoid common patterns like 1234, abc, or 111.");
+        if (score >= 80) suggestions.add("Good password!");
+
+        return suggestions;
+    }
+
+
     public void displayResult() {       //display results
         System.out.println("");
         System.out.println("Password Strength Report");
@@ -123,44 +148,8 @@ public class PasswordChecker {
         System.out.println("");
         System.out.println("Suggestions:");
 
-        if (password.length() < 8) {
-            System.out.println("- Use at least 8 characters.");
-        }
-
-        if (password.length() < 12) {
-            System.out.println("- Use 12 or more characters for better security.");
-        }
-
-        if (!password.matches(".*[A-Z].*")) {
-            System.out.println("- Add uppercase letters.");
-        }
-
-        if (!password.matches(".*[a-z].*")) {
-            System.out.println("- Add lowercase letters.");
-        }
-
-        if (!password.matches(".*[0-9].*")) {
-            System.out.println("- Add numbers.");
-        }
-
-        if (!password.matches(".*[^a-zA-Z0-9].*")) {
-            System.out.println("- Add special symbols like @, #, $, %.");
-        }
-
-        if (DictionaryChecker.isCommonPassword(password)) {
-            System.out.println("- Avoid common dictionary passwords.");
-        }
-
-        if (hasRepeatedCharacters()) {
-            System.out.println("- Avoid repeated characters like aaaa or 111.");
-        }
-
-        if (hasCommonPattern()) {
-            System.out.println("- Avoid common patterns like 1234, abc, or 111.");
-        }
-
-        if (score >= 80) {
-            System.out.println("- Good password!");
+        for (String s : getSuggestions()) {
+            System.out.println("- " + s);
         }
 
         System.out.println("");
