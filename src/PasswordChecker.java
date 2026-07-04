@@ -107,6 +107,9 @@ public class PasswordChecker {
                 || lower.contains("abc")
                 || lower.contains("246")
                 || lower.contains("135")
+                || lower.contains("qwerty")
+                || lower.contains("password")
+                || lower.contains("admin")
                 || lower.contains("xyz");
     }
 
