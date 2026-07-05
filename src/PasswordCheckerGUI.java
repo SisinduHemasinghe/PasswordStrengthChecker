@@ -10,7 +10,6 @@ public class PasswordCheckerGUI extends JFrame {
 
     private JPasswordField passwordField;
     private JButton toggleVisibilityButton;
-    private JButton checkButton;
     private JButton generateButton;
     private JButton copyButton;
 
@@ -27,6 +26,8 @@ public class PasswordCheckerGUI extends JFrame {
 
     private boolean passwordVisible = false;
 
+
+//    constructor
     public PasswordCheckerGUI() {
         setTitle("Password Strength Checker");
         setSize(480, 580);
@@ -39,7 +40,7 @@ public class PasswordCheckerGUI extends JFrame {
         mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
         mainPanel.add(buildPasswordInputPanel());
-        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(Box.createVerticalStrut(80));
         mainPanel.add(buildActionButtonsPanel());
         mainPanel.add(Box.createVerticalStrut(10));
         mainPanel.add(buildGeneratorOptionsPanel());
@@ -48,7 +49,7 @@ public class PasswordCheckerGUI extends JFrame {
 
         add(mainPanel);
 
-        // live update: recalculate strength on every keystroke, not just on button click
+        // live update: recalculate strength on every keystroke
         passwordField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -72,7 +73,7 @@ public class PasswordCheckerGUI extends JFrame {
         panel.setBorder(BorderFactory.createTitledBorder("Password"));
 
         passwordField = new JPasswordField();
-        passwordField.setEchoChar('\u2022');
+        passwordField.setEchoChar('\u002A');    //set type characters to asterisk
 
         toggleVisibilityButton = new JButton("Show");
         toggleVisibilityButton.addActionListener(this::onToggleVisibility);
@@ -84,10 +85,8 @@ public class PasswordCheckerGUI extends JFrame {
     }
 
     private JPanel buildActionButtonsPanel() {
-        JPanel panel = new JPanel(new GridLayout(1, 3, 8, 0));
+        JPanel panel = new JPanel(new GridLayout(1, 2, 8, 0));
 
-        checkButton = new JButton("Check Strength");
-        checkButton.addActionListener(this::onCheckStrength);
 
         generateButton = new JButton("Generate Password");
         generateButton.addActionListener(this::onGeneratePassword);
@@ -95,7 +94,6 @@ public class PasswordCheckerGUI extends JFrame {
         copyButton = new JButton("Copy");
         copyButton.addActionListener(this::onCopy);
 
-        panel.add(checkButton);
         panel.add(generateButton);
         panel.add(copyButton);
 
@@ -164,26 +162,13 @@ public class PasswordCheckerGUI extends JFrame {
             passwordField.setEchoChar((char) 0);
             toggleVisibilityButton.setText("Hide");
         } else {
-            passwordField.setEchoChar('\u2022');
+            passwordField.setEchoChar('\u002A');
             toggleVisibilityButton.setText("Show");
         }
     }
 
-    // Button click: an explicit "check" action, so it's fine to warn on empty input
-    private void onCheckStrength(ActionEvent e) {
-        String password = new String(passwordField.getPassword());
 
-        if (password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a password first.",
-                    "No Password", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        updateStrengthDisplay();
-    }
-
-    // Shared by the button AND the live document listener.
-    // No dialogs here - this can fire dozens of times a second while typing.
+    // Shared by live document listener. live strength update
     private void updateStrengthDisplay() {
         String password = new String(passwordField.getPassword());
 
